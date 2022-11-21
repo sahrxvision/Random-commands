@@ -1,0 +1,184 @@
+###
+# transfer sh command
+Delete command: curl --request DELETE "https://transfer.sh/m8MN0A/zephr.zip/SDLF2hy29s1H"
+
+Delete token: SDLF2hy29s1H
+
+Download link: https://transfer.sh/m8MN0A/zephr.zip
+
+### embeding video
+ <div style="position: relative; padding-bottom: 62.5%; height: 0;"><iframe src="https://www.loom.com/embed/8267b9d7d8264dab9e51ac31e2549a75" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+
+ ## fix media upload issue
+  FYI the fix for the media upload issue Shauna mentioned is running the permissions::default recipe. I’m running it manually now.
+
+  ## clear edgecast cache
+
+https://my.edgecast.com/HTTPLarge/PurgeLoad
+
+Pretty straightforward interface, let’s say I want to clear cache for https://www.adweek.com/commerce/health-companies-dominate-the-list-of-americas-most-trusted-brands/ , I just pick the adweek.com domain and add the path like this.
+
+## increase caching timeout
+
+sudo sysctl -a | grep dirty
+
+## cd into adweek wiki
+cd wiki/aws/route-53
+
+## Databases Sizes for all databases
+
+SELECT table_schema "DB Name", 
+Round(Sum(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" 
+FROM   information_schema.tables 
+GROUP  BY table_schema
+ORDER BY `DB Size in MB` DESC;
+
+## Tables Sizes for all databases
+
+SELECT 
+   table_schema as `Database`, 
+   table_name AS `Table`, 
+   round(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` 
+FROM information_schema.TABLES 
+ORDER BY (data_length + index_length) DESC;
+
+
+mY ZOOM LINK https://adweek.zoom.us/j/9604999704
+
+sdi:$apr1$6ot94sn5$nhTl1.7c1XI92qEkhcTaH1
+
+
+## # enable debug
+
+if(isset($_REQUEST['debug']))
+define('WP_DEBUG', true);
+else
+define('WP_DEBUG', false);
+
+## # fix auto-load issue
+
+execute composer::default recipe
+
+## # fix media upload issue
+
+execute permissions::default recipe
+
+## workflow 
+
+For the production deployment testing? All approved tickets go to develop and then develop is merged into production, after the final testing finishes. Then a release tag is created and deployed. (edited) 
+
+
+## # check number of posts
+
+So in production I first got the list of post types:
+wp post-type list --fields=name
+
+I manually filtered out those we added ourselves and used them here:
+wp post list --format=count --post_type=post,page,adw_video_gallery,adw_photo_gallery,[...]
+Outside of our main site it should be enough to just run:
+wp post list --format=count --post_type=post,page
+9:13
+And you’d run this, of course, inside /srv/www/wordpress/current/adweek/core.
+
+## ## check for error logs
+
+sudo tail -200 /var/log/apache2/error.log 
+
+sudo tail -100 /var/log/apache2/wordpress-error.log | grep fatal
+
+sudo tail -100 /var/log/apache2/wordpress-error.log
+
+
+sudo tail -200 /var/log/mysql.err
+
+sudo tail -200 /var/log/syslog
+
+
+
+   cd /srv/www/wordpress/current/adweek/core
+   sudo vi wp-config.php
+
+  # add use this lines to replace our current lines to have our origin url working
+
+  if( isset($_SERVER['HTTP_HOST']) && ( strpos($_SERVER['HTTP_HOST'], 'origin') !== false ) ){
+        define('WP_HOME', 'https://origin-vimal.adweek.com' );
+}else{
+        define('WP_HOME', 'https://vimal.adweek.com' );
+}
+
+
+   
+    cd /etc/apache2/sites-enabled
+    ls -la
+    sudo vi wordpress.conf
+    sudo sysctl restart apache
+    sudo /etc/init.d/apache2 restart
+    cd ..
+    
+    grep -irnl "vitaly.adweek.com" .
+    grep -irnl "origin-www.adweek.com" .
+    grep -irnl "origin-vimal.adweek.com" .
+    https://origin-www.adweek.com
+    grep -irn "origin-www.adweek.com" .
+    grep -irn "www.adweek.com" .
+    grep -irn "vitaly.adweek.com" .
+    grep -irn "vimal.adweek.com" .
+    cd /etc/apache2/sites-enabled
+    sudo vi wordpress.conf
+    sudo /etc/init.d/apache2 restart
+    cd /srv/www/wordpress/current/adweek/core
+    sudo vi wp-config.php
+    wp cache flush
+    clear
+    cd /etc/apache2/sites-enabled
+    ls -la
+    cp wordpress.conf wordpress-origin.conf
+    sudo cp wordpress.conf wordpress-origin.conf
+    ls -la
+    sudo chown www-data:www-data wordpress-origin.conf
+    sudo vi wordpress-origin.conf
+    sudo /etc/init.d/apache2 restart
+    cd /srv/www/wordpress/current/adweek/core
+    sudo vi wp-config.php
+    cd /etc/apache2/sites-enabled
+    sudo vi wordpress-origin.conf
+    cat wordpress-origin.conf
+    sudo /etc/init.d/apache2 restart
+    cd /var/log/apache2
+    ls -la
+    sudo chown root:adm wordpress-origin-*
+    ls -la
+    sudo chmod 777 wordpress-origin-*
+    ls -la
+    clear
+    ls -la
+    vi wordpress-origin-error.log
+    cp wordpress-origin-error.log /srv/www/wordpress/current/adweek/core/
+    sudo cp wordpress-origin-error.log /srv/www/wordpress/current/adweek/core/
+    cd /srv/www/wordpress/current/adweek/core/
+    ls -la
+    sudo chown www-data:root wordpress-origin-*
+    sudo chown www-data:www-data wordpress-origin*
+
+    sudo rm -rf wordpress-origin-error.log
+    ls -la
+
+  https://adweekllc.sharepoint.com/sites/ProductDevTeam9/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FProductDevTeam9%2FShared%20Documents%2FGeneral%2FCertificates&viewid=79a1f514%2Dde31%2D48a9%2Db1c3%2D4daeba40dacf
+
+first update custom cookbooks in bitbucket then run the update cookbook command in aws stack
+then input variable url for wp_o_home 
+then update apache sites enabled home url and error logging
+
+# upload artifacts in bitbucket
+- zip -r temp.zip wp-config
+artifacts:
+- temp.zip 
+
+## Install coudwatch agent
+sudo yum install amazon-cloudwatch-agent
+
+wp elasticpress index --post-ids=1490096 --show-bulk-errors
+
+
+aws sts decode-authorization-message --encoded-message G-G4CJwj1zEf8LhvcS0S3vmIYrphXKP76sl0Pzwsezre50PWd0RA9N2orikffmB_qZJxYSGbNp4fhYcczprr0B5Pc7THvymqUd0cpyMR2Fu-oiB2whiz0W02h9JvthxrNEDIulfkQhZmCNTplmLDY416eHrGq5HRhyI2gxJBb4SmO27jTVsfIJRs301yX8Zc-zDYDcj9UtdiSwJlMi5en-hVkYAwK-VTaecOYD--ILT_TqlogvHIoNotbRYgc9z09f54O6A-lpa5CtiZaZPnLTA53NCAeOM-9GN4adXnRaCCpsHCoErhPbfFH4l1anCTjZ2sX-HSajw-M3Y2DH7t_YfuGHSMbAZmxBu_OYAZkcxohIGru7wvNUenRWOxsokEI35Cc4B2SWXVgqMUov3n6HPboFF3v-humYK3AFUn3WAjVeal0x8lGiAtw1IQTFwnY_aBkfXF5Bi1VTYzKLSU-w2_zhBEmWSTPYjGGzSqHrR3qz9dXwSGC-3KyA_Cbe5Gg0lQTN3LGI9t1RAsAjkFEP6niAiR8Q34DWdnt7xjJxKx3ip-xnKWk0jpbLY75jO20bmyzx3rOcabdXA5PN7m7rxFLP0B-ougHrTcU48bK9NrJuCGydazcR9K23yJs3S1UuzUcOdwxa3W9eMu9YxayOa62ve6ZTd191C4BEb1GikOMIiXTF80qaENemgGaOWrAlc --query DecodedMessage --output text --region us-east-1| jq '.'
