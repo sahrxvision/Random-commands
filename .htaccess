@@ -1,0 +1,9 @@
+Order Deny,Allow
+Deny from all
+SetEnvIf X-Forwarded-For ^76\.216\.125\.142 env_allow_1
+Allow from env=env_allow_1
+
+Order Deny,Allow
+Deny from all
+SetEnvIf X-Forwarded-For ^63\.142\.207\.34 env_allow_1
+Allow from env=env_allow_1
