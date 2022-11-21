@@ -1,0 +1,12 @@
+
+#!/bin/bash
+username="develop"
+key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC0j9VQ573OViTW+X7gJp9S6dzkJRdolOJqJPjgpPLyYxs0IZKIHL4YYRWTWvK30v9rCs7+EritnMlTQigrKKr/8V34qjipu/HRbAC$
+adduser $username --disabled-password
+mkdir /home/$username/.ssh
+chmod 700 /home/$username/.ssh
+echo $key >> /home/$username/.ssh/authorized_keys
+chmod 600 /home/$username/.ssh/authorized_keys
+chown -R $username:$username /home/$username
+usermod -aG sudo $username
+passwd $username
