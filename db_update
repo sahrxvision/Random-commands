@@ -1,0 +1,76 @@
+update DB for asentech
+# DB Export and Import
+
+DB credentials are defined inside wp-config.php on each individual server.
+
+```sh
+cd /srv/www/wordpress/current/adweek/core/
+/srv/www/wordpress/current/adweek/core/wp-content/plugins/aw-newsletters/includes/postup
+cd /srv/www/wordpress/current/blogs
+srv/www/wordpress/current/blogs
+
+WPDBNAME=`sudo cat wp-config.php | grep DB_NAME | cut -d \' -f 4`
+WPDBUSER=`sudo cat wp-config.php | grep DB_USER | cut -d \' -f 4`
+WPDBPASS=`sudo cat wp-config.php | grep DB_PASSWORD | cut -d \' -f 4`
+WPDBHOST=`sudo cat wp-config.php | grep DB_HOST | cut -d \' -f 4`
+
+sudo apt install -y mysql-client
+sudo rm -rf /tmp/db_backup
+mkdir /tmp/db_backup
+
+# export DB from production, takes ~1 minute
+mysqldump -h 'rds-production.cgjch8ssa2qk.us-east-1.rds.amazonaws.com' -u wordpress -p adweek_v3 > /tmp/db_backup/db.sql
+
+# export DB from blogs_production, takes ~1 minute
+mysqldump -h 'wordpress.cluster-cgjch8ssa2qk.us-east-1.rds.amazonaws.com' -u wordpress -p abn > /tmp/db_backup/db.sql
+
+# update URLs, takes ~ 1-2 mins
+sed -i "s/www\.adweek\.com/release\.adweek\.com/g" /tmp/db_backup/db.sql && sed -i "s/adweek\.com-prod/static-dev\.adweek.com/g" /tmp/db_backup/db.sql
+
+# import DB, takes ~ 10 minutes
+sudo nohup mysql -h $WPDBHOST -u $WPDBUSER -p$WPDBPASS $WPDBNAME  < /tmp/db_backup/db.sql &
+mysql -h adweek-stage-v2.cluster-cgjch8ssa2qk.us-east-1.rds.amazonaws.com -u release -p adweek_release_1 < /tmp/db_backup/db.sql
+
+# import to Release BLOG DB, takes ~ 10 minutes
+mysql -h wordpress-staging.cgjch8ssa2qk.us-east-1.rds.amazonaws.com -u releaseblogs -p adweek_releaseblogs_2 < /tmp/db_backup/db.sql
+
+# check progress
+ps -p PID
+```
+
+## Update site options and API keys
+
+https://bitbucket.org/Adweek/adweek_wordpress_chef/src/master/search-and-replace-nonprod/recipes/default.rb
+
+```sh
+wp cache flush
+```
+
+## Sync upload folders
+
+TODO
+
+
+###########
+
+wp option update home 'https://origin-vitaly.adweek.com'
+wp option update siteurl 'https:/origin-vitaly.adweek.com'
+wp search-replace "adweek.com" "vitaly.adweek.com" --all-tables
+
+wp search-replace "//www.adweek.com" "//shauna.adweek.com" --all-tables
+
+#################################
+
+curl https://transfer.sh/abSKBO/zephr.zip -o /tmp/zephr.zip
+curl https://transfer.sh/xwz0xh/zephr_backup.zip -o /tmp/zephr_backup.zip
+
+
+
+#### #####
+#move files if it isn't on server core folder
+
+mv 
+
+
+------****-----
+sed -i "s/www\.adweek\.com/origin-$WPDBUSER\.adweek\.com/g" /tmp/zephr/*.json && \
