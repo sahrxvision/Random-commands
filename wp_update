@@ -1,0 +1,75 @@
+# Exporting and importing Zephr-related settings
+
+```bash
+sudo apt-get install -y zip
+mkdir /tmp/zephr_backup
+
+# Export settings from production server
+
+cd /srv/www/wordpress/current/adweek/core
+
+wp option get zephr_products_list --format=json > /tmp/zephr_backup/zephr_products_list.json
+wp option get zephr_plugin_settings --format=json > /tmp/zephr_backup/zephr_plugin_settings.json
+wp option get zephr_products --format=json > /tmp/zephr_backup/zephr_products.json
+wp option get show_account_links --format=json > /tmp/zephr_backup/show_account_links.json
+wp option get account_subscribe_title --format=json > /tmp/zephr_backup/account_subscribe_title.json
+wp option get account_subscribe_url --format=json > /tmp/zephr_backup/account_subscribe_url.json
+wp option get corporate_info_title --format=json > /tmp/zephr_backup/corporate_info_title.json
+wp option get corporate_info_url --format=json > /tmp/zephr_backup/corporate_info_url.json
+wp option get account_view_title --format=json > /tmp/zephr_backup/account_view_title.json
+wp option get account_view_slug --format=json > /tmp/zephr_backup/account_view_slug.json
+wp option get account_view_url --format=json > /tmp/zephr_backup/account_view_url.json
+wp option get mailing_url_title --format=json > /tmp/zephr_backup/mailing_url_title.json
+wp option get mailing_update_url --format=json > /tmp/zephr_backup/mailing_update_url.json
+wp option get default_subscription_source_id --format=json > /tmp/zephr_backup/default_subscription_source_id.json
+wp option get account_login_title --format=json > /tmp/zephr_backup/account_login_title.json
+wp option get account_login_url --format=json > /tmp/zephr_backup/account_login_url.json
+wp option get account_logout_title --format=json > /tmp/zephr_backup/account_logout_title.json
+wp option get paywall_forgot_password_link --format=json > /tmp/zephr_backup/paywall_forgot_password_link.json
+wp option get paywall_user_signup_link --format=json > /tmp/zephr_backup/paywall_user_signup_link.json
+wp option get postup_settings --format=json > /tmp/zephr_backup/postup_settings.json
+wp option get rest_routes --format=json > /tmp/zephr_backup/rest_routes.json
+
+zip -r /tmp/zephr_backup.zip /tmp/zephr_backup
+transfer /tmp/zephr_backup.zip
+
+# Import settings on dev server
+sudo rm -rf /tmp/zephr_backup
+sudo rm -rf /tmp/zephr_backup.zip
+mkdir 
+curl $URL -o /tmp/zephr_backup.zip
+curl https://transfer.sh/VoR2cB/zephr_backup.zip -o /tmp/zephr_backup.zip
+sudo apt-get install -y zip
+unzip /tmp/zephr_backup.zip -d /
+
+curl --request DELETE $URL
+
+WPDBUSER=`sudo cat wp-config.php | grep DB_USER | cut -d \' -f 4`
+sed -i "s/www\.adweek\.com/shauna\.adweek\.com/g" /tmp/zephr_backup/*.json && sed -i "s/adweek\.com-prod/static-dev\.adweek.com/g" /tmp/zephr_backup/*.json
+
+cd /srv/www/wordpress/current/adweek/core
+
+wp option update zephr_products_list < /tmp/zephr_backup/zephr_products_list.json --format=json
+wp option update zephr_plugin_settings < /tmp/zephr_backup/zephr_plugin_settings.json --format=json
+wp option update zephr_products < /tmp/zephr_backup/zephr_products.json --format=json
+wp option update show_account_links < /tmp/zephr_backup/show_account_links.json --format=json
+wp option update account_subscribe_title < /tmp/zephr_backup/account_subscribe_title.json --format=json
+wp option update account_subscribe_url < /tmp/zephr_backup/account_subscribe_url.json --format=json
+wp option update corporate_info_title < /tmp/zephr_backup/corporate_info_title.json --format=json
+wp option update corporate_info_url < /tmp/zephr_backup/corporate_info_url.json --format=json
+wp option update account_view_title < /tmp/zephr_backup/account_view_title.json --format=json
+wp option update account_view_slug < /tmp/zephr_backup/account_view_slug.json --format=json
+wp option update account_view_url < /tmp/zephr_backup/account_view_url.json --format=json
+wp option update mailing_url_title < /tmp/zephr_backup/mailing_url_title.json --format=json
+wp option update mailing_update_url < /tmp/zephr_backup/mailing_update_url.json --format=json
+wp option update default_subscription_source_id < /tmp/zephr_backup/default_subscription_source_id.json --format=json
+wp option update account_login_title < /tmp/zephr_backup/account_login_title.json --format=json
+wp option update account_login_url < /tmp/zephr_backup/account_login_url.json --format=json
+wp option update account_logout_title < /tmp/zephr_backup/account_logout_title.json --format=json
+wp option update paywall_forgot_password_link < /tmp/zephr_backup/paywall_forgot_password_link.json --format=json
+wp option update paywall_user_signup_link < /tmp/zephr_backup/paywall_user_signup_link.json --format=json
+wp option update postup_settings < /tmp/zephr_backup/postup_settings.json --format=json
+wp option update rest_routes < /tmp/zephr_backup/rest_routes.json --format=json
+
+wp cache flush
+```
